@@ -5,7 +5,8 @@
   "description": "在GitHub页面直接预览README.md中的图片，支持弹窗浏览和导航，兼容github.dev编辑器",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "downloads"
   ],
   "host_permissions": [
     "https://github.com/*",

@@ -221,6 +221,12 @@ class PreviewHub {
                 <button class="previewhub-zoom-btn previewhub-zoom-reset" title="重置">⌂</button>
               </div>
               <span class="previewhub-image-counter">1 / 1</span>
+              <button class="previewhub-btn previewhub-download-btn" title="下载图片">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75z"></path>
+                  <path d="M3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"></path>
+                </svg>
+              </button>
               <button class="previewhub-btn previewhub-close-btn" title="关闭">×</button>
             </div>
           </div>
@@ -260,9 +266,13 @@ class PreviewHub {
     const zoomInBtn = this.modal.querySelector('.previewhub-zoom-in');
     const zoomOutBtn = this.modal.querySelector('.previewhub-zoom-out');
     const zoomResetBtn = this.modal.querySelector('.previewhub-zoom-reset');
+    const downloadBtn = this.modal.querySelector('.previewhub-download-btn');
 
     // 关闭事件（移除点击遮罩层关闭功能）
     closeBtn.addEventListener('click', () => this.closePreview());
+    
+    // 下载事件
+    downloadBtn.addEventListener('click', () => this.downloadCurrentImage());
 
     // 导航事件
     prevBtn.addEventListener('click', () => this.showPrevious());
@@ -518,6 +528,241 @@ class PreviewHub {
     
     // 限制垂直位置
     this.translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, this.translateY));
+  }
+
+  // 下载当前图片
+  async downloadCurrentImage() {
+    if (this.images.length === 0) return;
+    
+    const currentImage = this.images[this.currentIndex];
+    const imageUrl = currentImage.src;
+    const imageName = this.getImageName(currentImage);
+    
+    // 创建下载按钮的加载状态
+    const downloadBtn = this.modal.querySelector('.previewhub-download-btn');
+    const originalContent = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<span style="font-size: 12px;">...</span>';
+    downloadBtn.disabled = true;
+    
+    try {
+      // 尝试多种下载方法
+      const success = await this.tryDownloadMethods(imageUrl, imageName);
+      
+      if (!success) {
+        throw new Error('所有下载方法都失败了');
+      }
+      
+      // 恢复按钮状态
+      downloadBtn.innerHTML = originalContent;
+      downloadBtn.disabled = false;
+      
+    } catch (error) {
+      console.error('下载图片失败:', error);
+      
+      // 恢复按钮状态
+      downloadBtn.innerHTML = originalContent;
+      downloadBtn.disabled = false;
+      
+      // 显示错误提示
+      this.showDownloadError();
+    }
+  }
+  
+  // 尝试多种下载方法
+  async tryDownloadMethods(imageUrl, imageName) {
+    // 方法1: 直接使用Canvas转换（适用于同域图片）
+    try {
+      const success = await this.downloadViaCanvas(imageUrl, imageName);
+      if (success) return true;
+    } catch (error) {
+      console.log('Canvas方法失败:', error.message);
+    }
+    
+    // 方法2: 尝试fetch请求（可能被CORS阻止）
+    try {
+      const success = await this.downloadViaFetch(imageUrl, imageName);
+      if (success) return true;
+    } catch (error) {
+      console.log('Fetch方法失败:', error.message);
+    }
+    
+    // 方法3: 使用Chrome下载API（如果可用）
+    try {
+      const success = await this.downloadViaAPI(imageUrl, imageName);
+      if (success) return true;
+    } catch (error) {
+      console.log('API方法失败:', error.message);
+    }
+    
+    // 方法4: 直接链接下载（备用方案）
+    try {
+      this.downloadViaLink(imageUrl, imageName);
+      return true;
+    } catch (error) {
+      console.log('Link方法失败:', error.message);
+    }
+    
+    return false;
+  }
+  
+  // 方法1: 通过Canvas下载
+  async downloadViaCanvas(imageUrl, imageName) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          
+          ctx.drawImage(img, 0, 0);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = imageName;
+              link.style.display = 'none';
+              
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              
+              window.URL.revokeObjectURL(url);
+              resolve(true);
+            } else {
+              reject(new Error('无法创建blob'));
+            }
+          }, 'image/png');
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      img.onerror = () => {
+        reject(new Error('图片加载失败'));
+      };
+      
+      img.src = imageUrl;
+    });
+  }
+  
+  // 方法2: 通过Fetch下载
+  async downloadViaFetch(imageUrl, imageName) {
+    const response = await fetch(imageUrl, {
+      mode: 'cors',
+      credentials: 'omit'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const blob = await response.blob();
+    
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = imageName;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    window.URL.revokeObjectURL(url);
+    return true;
+  }
+  
+  // 方法3: 使用Chrome下载API
+  async downloadViaAPI(imageUrl, imageName) {
+    if (typeof chrome !== 'undefined' && chrome.downloads) {
+      return new Promise((resolve, reject) => {
+        chrome.downloads.download({
+          url: imageUrl,
+          filename: imageName,
+          saveAs: false
+        }, (downloadId) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+          } else {
+            resolve(true);
+          }
+        });
+      });
+    } else {
+      throw new Error('Chrome下载API不可用');
+    }
+  }
+  
+  // 方法4: 直接链接下载（备用方案）
+  downloadViaLink(imageUrl, imageName) {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = imageName;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  // 获取图片文件名
+  getImageName(image) {
+    // 从URL中提取文件名
+    let fileName = '';
+    try {
+      const url = new URL(image.src);
+      const pathname = url.pathname;
+      fileName = pathname.split('/').pop() || 'image';
+      
+      // 如果没有扩展名，根据URL或alt添加默认扩展名
+      if (!fileName.includes('.')) {
+        const extension = this.getImageExtension(image.src);
+        fileName += extension;
+      }
+    } catch {
+      // 如果URL解析失败，使用alt或默认名称
+      fileName = (image.alt || image.title || 'image').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_');
+      fileName += '.png'; // 默认扩展名
+    }
+    
+    return fileName;
+  }
+  
+  // 获取图片扩展名
+  getImageExtension(url) {
+    const extensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp'];
+    const lowerUrl = url.toLowerCase();
+    
+    for (const ext of extensions) {
+      if (lowerUrl.includes(ext)) {
+        return ext;
+      }
+    }
+    
+    return '.png'; // 默认扩展名
+  }
+  
+  // 显示下载错误提示
+  showDownloadError() {
+    const info = this.modal.querySelector('.previewhub-image-info');
+    const originalText = info.textContent;
+    
+    info.textContent = '下载失败，可能由于跨域限制。请右键图片选择"图片另存为"';
+    info.style.color = '#d1242f';
+    
+    setTimeout(() => {
+      info.textContent = originalText;
+      info.style.color = '';
+    }, 5000);
   }
 
   // 关闭预览

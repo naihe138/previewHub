@@ -132,6 +132,36 @@
   color: #24292f;
 }
 
+/* 下载按钮样式 */
+.previewhub-download-btn {
+  background: none;
+  border: none;
+  color: #656d76;
+  cursor: pointer;
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.previewhub-download-btn:hover {
+  background: #f3f4f6;
+  color: #0969da;
+}
+
+.previewhub-download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.previewhub-download-btn svg {
+  opacity: 0.9;
+}
+
 /* 模态框主体 */
 .previewhub-modal-body {
   flex: 1;
@@ -307,6 +337,15 @@
     color: #f0f6fc;
   }
   
+  .previewhub-download-btn {
+    color: #8b949e;
+  }
+  
+  .previewhub-download-btn:hover {
+    background: #21262d;
+    color: #58a6ff;
+  }
+  
   .previewhub-modal-body {
     background: #0d1117;
   }
@@ -343,6 +382,17 @@ body[data-color-mode="dark"] .previewhub-modal-footer,
 body[data-color-mode="dark"] .previewhub-modal-body,
 .vscode-dark .previewhub-modal-body {
   background: #0d1117;
+}
+
+body[data-color-mode="dark"] .previewhub-download-btn,
+.vscode-dark .previewhub-download-btn {
+  color: #8b949e;
+}
+
+body[data-color-mode="dark"] .previewhub-download-btn:hover,
+.vscode-dark .previewhub-download-btn:hover {
+  background: #21262d;
+  color: #58a6ff;
 }
 
 /* 缩放控制样式 */
