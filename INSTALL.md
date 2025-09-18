@@ -110,8 +110,8 @@ A:
 
 ## 📞 获取帮助
 
-- 🐛 报告Bug：[GitHub Issues](https://github.com/naice/previewHub/issues)
-- 💡 功能建议：[GitHub Discussions](https://github.com/naice/previewHub/discussions)
+- 🐛 报告Bug：[GitHub Issues](https://github.com/naihe138/previewHub/issues)
+- 💡 功能建议：[GitHub Discussions](https://github.com/naihe138/previewHub/discussions)
 - 📧 联系作者：通过GitHub
 
 ## 🔄 更新
@@ -120,3 +120,9 @@ A:
 1. 获取最新代码：`git pull origin main`
 2. 在 `chrome://extensions/` 中点击插件的刷新按钮
 3. 重新加载使用插件的页面
+
+
+
+![asd](/previewTest/p1.png)
+![asd](/previewTest/p2.png)
+![asd](/previewTest/p3.png)

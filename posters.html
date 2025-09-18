@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PreviewHub 宣传海报</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0d1117;
+            color: white;
+            line-height: 1.6;
+            overflow-x: auto;
+            padding: 2rem;
+        }
+        
+        .poster-container {
+            display: flex;
+            gap: 2rem;
+            min-width: max-content;
+            padding-bottom: 2rem;
+        }
+        
+        .poster {
+            width: 800px;
+            height: 1200px;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .poster:hover {
+            transform: translateY(-10px);
+        }
+        
+        /* 海报1：主要功能展示 */
+        .poster-1 {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+        
+        .poster-1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        /* 海报2：技术特色 */
+        .poster-2 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+        
+        .poster-2::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        /* 海报3：现代设计 */
+        .poster-3 {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
+        }
+        
+        .poster-3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(34, 197, 94, 0.1) 50%, transparent 70%),
+                        linear-gradient(-45deg, transparent 30%, rgba(168, 85, 247, 0.1) 50%, transparent 70%);
+        }
+        
+        /* 海报4：GitHub风格 */
+        .poster-4 {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #21262d 100%);
+            border: 1px solid #30363d;
+        }
+        
+        .poster-4::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at top, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+        }
+        
+        .poster-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 4rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            border-radius: 24px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            opacity: 0.8;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .features {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        
+        .feature-content h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-content p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(79, 70, 229, 0.4);
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .tech-item {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .tech-item h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #3b82f6;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #22c55e;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+        
+        .github-style {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #e6edf3;
+        }
+        
+        .github-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: currentColor;
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>') no-repeat center;
+            mask-size: contain;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .poster-nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: #3b82f6;
+            transform: scale(1.2);
+        }
+        
+        @media (max-width: 768px) {
+            .poster-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .poster {
+                width: 90vw;
+                max-width: 600px;
+                height: 800px;
+            }
+            
+            .poster-content {
+                padding: 2rem;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="poster-nav">
+        <div class="nav-dot active" data-poster="1"></div>
+        <div class="nav-dot" data-poster="2"></div>
+        <div class="nav-dot" data-poster="3"></div>
+        <div class="nav-dot" data-poster="4"></div>
+    </div>
+
+    <div class="poster-container">
+        <!-- 海报1：主要功能展示 -->
+        <div class="poster poster-1" id="poster-1">
+            <div class="poster-content">
+                <div class="header">
+                    <div class="logo floating">🖼️</div>
+                    <h1 class="title">PreviewHub</h1>
+                    <p class="subtitle">GitHub图片预览插件</p>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-content">
+                            <h3>智能检测</h3>
+                            <p>自动识别README.md中的所有图片</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">🖱️</div>
+                        <div class="feature-content">
+                            <h3>一键预览</h3>
+                            <p>点击图片或预览按钮即可打开弹窗</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-content">
+                            <h3>图片缩放</h3>
+                            <p>支持1-10倍缩放，滚轮缩放，按钮控制</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">📥</div>
+                        <div class="feature-content">
+                            <h3>图片下载</h3>
+                            <p>一键下载当前预览的图片到本地</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">⌨️</div>
+                        <div class="feature-content">
+                            <h3>键盘导航</h3>
+                            <p>支持方向键和ESC键操作</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta">
+                    <a href="#" class="cta-button">
+                        <span class="github-icon"></span>
+                        立即安装
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 海报2：技术特色 -->
+        <div class="poster poster-2" id="poster-2">
+            <div class="poster-content">
+                <div class="header">
+                    <div class="logo">⚡</div>
+                    <h1 class="title">技术驱动</h1>
+                    <p class="subtitle">现代化的浏览器插件技术</p>
+                </div>
+                
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h4>Manifest V3</h4>
+                        <p>最新的Chrome扩展API</p>
+                    </div>
+                    <div class="tech-item">
+                        <h4>Vanilla JS</h4>
+                        <p>无框架依赖，轻量高效</p>
+                    </div>
+                    <div class="tech-item">
+                        <h4>CSS3</h4>
+                        <p>现代化的响应式设计</p>
+                    </div>
+                    <div class="tech-item">
+                        <h4>GitHub API</h4>
+                        <p>智能解析图片URL</p>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">< 10KB</span>
+                        <div class="stat-label">文件大小</div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">< 1s</span>
+                        <div class="stat-label">加载时间</div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">< 5MB</span>
+                        <div class="stat-label">内存占用</div>
+                    </div>
+                </div>
+                
+                <div class="code-block">
+                    <div style="color: #7c3aed;">// 支持多种图片格式</div>
+                    <div style="color: #22c55e;">const formats = [</div>
+                    <div style="color: #f59e0b; margin-left: 1rem;">'PNG', 'JPG', 'GIF', 'SVG',</div>
+                    <div style="color: #f59e0b; margin-left: 1rem;">'WebP', 'BMP', 'ICO'</div>
+                    <div style="color: #22c55e;">];</div>
+                </div>
+                
+                <div class="cta">
+                    <a href="#" class="cta-button">
+                        查看源代码
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 海报3：现代设计 -->
+        <div class="poster poster-3" id="poster-3">
+            <div class="poster-content">
+                <div class="header">
+                    <div class="logo">🎨</div>
+                    <h1 class="title">设计精美</h1>
+                    <p class="subtitle">与GitHub完美融合的用户体验</p>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🌙</div>
+                        <div class="feature-content">
+                            <h3>深色模式</h3>
+                            <p>自动适配GitHub的深色主题</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-content">
+                            <h3>响应式设计</h3>
+                            <p>支持桌面和移动设备</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">🖐️</div>
+                        <div class="feature-content">
+                            <h3>拖拽移动</h3>
+                            <p>放大后可拖拽移动图片，智能边界限制</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">💻</div>
+                        <div class="feature-content">
+                            <h3>多平台支持</h3>
+                            <p>兼容GitHub.com和GitHub.dev编辑器</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">7+</span>
+                        <div class="stat-label">图片格式</div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">2</span>
+                        <div class="stat-label">平台支持</div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10x</span>
+                        <div class="stat-label">最大缩放</div>
+                    </div>
+                </div>
+                
+                <div class="cta">
+                    <a href="#" class="cta-button">
+                        体验演示
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 海报4：GitHub风格 -->
+        <div class="poster poster-4 github-style" id="poster-4">
+            <div class="poster-content">
+                <div class="header">
+                    <div class="logo">
+                        <span class="github-icon" style="font-size: 3rem; color: white;"></span>
+                    </div>
+                    <h1 class="title">PreviewHub</h1>
+                    <p class="subtitle">让GitHub图片预览更简单</p>
+                </div>
+                
+                <div class="code-block">
+                    <div style="color: #7c3aed;">// 安装方法</div>
+                    <div style="color: #22c55e;">git clone https://github.com/naihe138/previewHub</div>
+                    <div style="color: #22c55e;">cd previewHub</div>
+                    <div style="color: #7c3aed;">// 在Chrome中加载插件</div>
+                    <div style="color: #f59e0b;">chrome://extensions/</div>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-content">
+                            <h3>快速安装</h3>
+                            <p>Chrome Web Store一键安装</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">💻</div>
+                        <div class="feature-content">
+                            <h3>快速IDE</h3>
+                            <p>一键跳转到github.dev在线编辑器</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">🛠️</div>
+                        <div class="feature-content">
+                            <h3>开源项目</h3>
+                            <p>MIT许可证，欢迎贡献代码</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="code-block">
+                    <div style="color: #7c3aed;">// 快捷键</div>
+                    <div style="color: #22c55e;">← / → : 上一张/下一张图片</div>
+                    <div style="color: #22c55e;">+ / - : 放大/缩小图片</div>
+                    <div style="color: #22c55e;">Esc : 关闭预览窗口</div>
+                    <div style="color: #22c55e;">滚轮 : 缩放图片</div>
+                </div>
+                
+                <div class="cta">
+                    <a href="#" class="cta-button">
+                        <span class="github-icon"></span>
+                        GitHub Repository
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单的导航功能
+        document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+                
+                const poster = document.getElementById(`poster-${index + 1}`);
+                poster.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+            });
+        });
+        
+        // 滚动时更新导航
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const index = entry.target.id.split('-')[1];
+                    document.querySelectorAll('.nav-dot').forEach(d => d.classList.remove('active'));
+                    document.querySelector(`[data-poster="${index}"]`).classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.poster').forEach(poster => {
+            observer.observe(poster);
+        });
+    </script>
+</body>
+</html>
