@@ -1,6 +1,6 @@
 # PreviewHub - GitHub图片预览插件
 
-🖼️ **PreviewHub** 是一个Chrome浏览器插件，让您在GitHub页面上直接预览README.md中的图片，无需跳转到单独的图片页面。
+🖼️ **PreviewHub** 是一个Chrome浏览器插件，让您在GitHub页面上直接预览README.md中的图片，无需跳转到单独的图片页面。同时可以支持打开web ide
 
 ### 🎨 图标设计
 简约设计融合GitHub与图片预览概念：
