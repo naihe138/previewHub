@@ -5,6 +5,17 @@ class PreviewHub {
     this.images = [];
     this.currentIndex = 0;
     this.isGitHubDev = window.location.hostname.includes('github.dev');
+    
+    // 图片缩放和拖拽相关属性
+    this.scale = 1;
+    this.minScale = 1;
+    this.maxScale = 10;
+    this.translateX = 0;
+    this.translateY = 0;
+    this.isDragging = false;
+    this.lastMouseX = 0;
+    this.lastMouseY = 0;
+    
     this.init();
   }
 
@@ -203,6 +214,12 @@ class PreviewHub {
           <div class="previewhub-modal-header">
             <h3 class="previewhub-modal-title">图片预览</h3>
             <div class="previewhub-modal-controls">
+              <div class="previewhub-zoom-controls">
+                <button class="previewhub-zoom-btn previewhub-zoom-out" title="缩小">-</button>
+                <span class="previewhub-zoom-level">100%</span>
+                <button class="previewhub-zoom-btn previewhub-zoom-in" title="放大">+</button>
+                <button class="previewhub-zoom-btn previewhub-zoom-reset" title="重置">⌂</button>
+              </div>
               <span class="previewhub-image-counter">1 / 1</span>
               <button class="previewhub-btn previewhub-close-btn" title="关闭">×</button>
             </div>
@@ -210,13 +227,16 @@ class PreviewHub {
           <div class="previewhub-modal-body">
             <button class="previewhub-nav-btn previewhub-prev-btn" title="上一张">‹</button>
             <div class="previewhub-image-container">
-              <img class="previewhub-preview-image" src="" alt="">
+              <div class="previewhub-image-wrapper">
+                <img class="previewhub-preview-image" src="" alt="">
+              </div>
               <div class="previewhub-loading">加载中...</div>
             </div>
             <button class="previewhub-nav-btn previewhub-next-btn" title="下一张">›</button>
           </div>
           <div class="previewhub-modal-footer">
             <p class="previewhub-image-info"></p>
+            <p class="previewhub-zoom-hint">滚轮缩放 | 拖拽移动 | 双击重置</p>
           </div>
         </div>
       </div>
@@ -228,20 +248,55 @@ class PreviewHub {
 
   // 设置模态框事件
   setupModalEvents() {
-    const overlay = this.modal.querySelector('.previewhub-modal-overlay');
+    const _overlay = this.modal.querySelector('.previewhub-modal-overlay');
     const closeBtn = this.modal.querySelector('.previewhub-close-btn');
     const prevBtn = this.modal.querySelector('.previewhub-prev-btn');
     const nextBtn = this.modal.querySelector('.previewhub-next-btn');
+    const imageContainer = this.modal.querySelector('.previewhub-image-container');
+    const _imageWrapper = this.modal.querySelector('.previewhub-image-wrapper');
+    const previewImg = this.modal.querySelector('.previewhub-preview-image');
+    
+    // 缩放控制按钮
+    const zoomInBtn = this.modal.querySelector('.previewhub-zoom-in');
+    const zoomOutBtn = this.modal.querySelector('.previewhub-zoom-out');
+    const zoomResetBtn = this.modal.querySelector('.previewhub-zoom-reset');
 
-    // 关闭事件
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) this.closePreview();
-    });
+    // 关闭事件（移除点击遮罩层关闭功能）
     closeBtn.addEventListener('click', () => this.closePreview());
 
     // 导航事件
     prevBtn.addEventListener('click', () => this.showPrevious());
     nextBtn.addEventListener('click', () => this.showNext());
+
+    // 缩放控制事件
+    zoomInBtn.addEventListener('click', () => this.zoomIn());
+    zoomOutBtn.addEventListener('click', () => this.zoomOut());
+    zoomResetBtn.addEventListener('click', () => this.resetZoom());
+
+    // 滚轮缩放事件
+    imageContainer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      this.zoom(delta);
+    });
+
+    // 双击重置缩放
+    previewImg.addEventListener('dblclick', () => this.resetZoom());
+
+    // 鼠标拖拽事件
+    previewImg.addEventListener('mousedown', (e) => this.startDrag(e));
+    document.addEventListener('mousemove', (e) => this.drag(e));
+    document.addEventListener('mouseup', () => this.endDrag());
+
+    // 触摸事件（移动端支持）
+    previewImg.addEventListener('touchstart', (e) => this.startDrag(e.touches[0]));
+    document.addEventListener('touchmove', (e) => {
+      if (this.isDragging) {
+        e.preventDefault();
+        this.drag(e.touches[0]);
+      }
+    });
+    document.addEventListener('touchend', () => this.endDrag());
 
     // 键盘事件
     document.addEventListener('keydown', (e) => {
@@ -256,6 +311,19 @@ class PreviewHub {
           break;
         case 'ArrowRight':
           this.showNext();
+          break;
+        case '+':
+        case '=':
+          e.preventDefault();
+          this.zoomIn();
+          break;
+        case '-':
+          e.preventDefault();
+          this.zoomOut();
+          break;
+        case '0':
+          e.preventDefault();
+          this.resetZoom();
           break;
       }
     });
@@ -288,12 +356,20 @@ class PreviewHub {
     const prevBtn = this.modal.querySelector('.previewhub-prev-btn');
     const nextBtn = this.modal.querySelector('.previewhub-next-btn');
 
+    // 重置缩放和位置
+    this.resetZoom();
+
     // 更新计数器
     counter.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
     
     // 更新导航按钮状态
-    prevBtn.style.display = this.images.length > 1 ? 'block' : 'none';
-    nextBtn.style.display = this.images.length > 1 ? 'block' : 'none';
+    if (this.images.length > 1) {
+      prevBtn.style.display = 'flex';
+      nextBtn.style.display = 'flex';
+    } else {
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    }
     
     // 显示加载状态
     loading.style.display = 'block';
@@ -331,10 +407,124 @@ class PreviewHub {
     this.updatePreview();
   }
 
+  // 缩放功能
+  zoom(delta) {
+    const newScale = Math.max(this.minScale, Math.min(this.maxScale, this.scale + delta));
+    if (newScale !== this.scale) {
+      this.scale = newScale;
+      this.updateImageTransform();
+      this.updateZoomLevel();
+      this.constrainPosition();
+    }
+  }
+
+  zoomIn() {
+    this.zoom(0.2);
+  }
+
+  zoomOut() {
+    this.zoom(-0.2);
+  }
+
+  resetZoom() {
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    this.updateImageTransform();
+    this.updateZoomLevel();
+  }
+
+  // 更新图片变换
+  updateImageTransform() {
+    const previewImg = this.modal.querySelector('.previewhub-preview-image');
+    if (previewImg) {
+      previewImg.style.transform = `scale(${this.scale}) translate(${this.translateX}px, ${this.translateY}px)`;
+      previewImg.style.cursor = this.scale > 1 ? 'grab' : 'default';
+      
+      if (this.isDragging) {
+        previewImg.style.cursor = 'grabbing';
+      }
+    }
+  }
+
+  // 更新缩放级别显示
+  updateZoomLevel() {
+    const zoomLevel = this.modal.querySelector('.previewhub-zoom-level');
+    if (zoomLevel) {
+      zoomLevel.textContent = `${Math.round(this.scale * 100)}%`;
+    }
+  }
+
+  // 开始拖拽
+  startDrag(e) {
+    if (this.scale <= 1) return; // 只有放大时才能拖拽
+    
+    this.isDragging = true;
+    this.lastMouseX = e.clientX;
+    this.lastMouseY = e.clientY;
+    this.updateImageTransform();
+    e.preventDefault();
+  }
+
+  // 拖拽中
+  drag(e) {
+    if (!this.isDragging || this.scale <= 1) return;
+
+    const deltaX = e.clientX - this.lastMouseX;
+    const deltaY = e.clientY - this.lastMouseY;
+    
+    this.translateX += deltaX / this.scale;
+    this.translateY += deltaY / this.scale;
+    
+    this.constrainPosition();
+    this.updateImageTransform();
+    
+    this.lastMouseX = e.clientX;
+    this.lastMouseY = e.clientY;
+  }
+
+  // 结束拖拽
+  endDrag() {
+    this.isDragging = false;
+    this.updateImageTransform();
+  }
+
+  // 限制拖拽边界
+  constrainPosition() {
+    if (this.scale <= 1) {
+      this.translateX = 0;
+      this.translateY = 0;
+      return;
+    }
+
+    const container = this.modal.querySelector('.previewhub-image-container');
+    const previewImg = this.modal.querySelector('.previewhub-preview-image');
+    
+    if (!container || !previewImg) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const imgRect = previewImg.getBoundingClientRect();
+    
+    // 计算图片在当前缩放下的实际尺寸
+    const scaledWidth = imgRect.width;
+    const scaledHeight = imgRect.height;
+    
+    // 计算最大允许的偏移量
+    const maxTranslateX = Math.max(0, (scaledWidth - containerRect.width) / 2 / this.scale);
+    const maxTranslateY = Math.max(0, (scaledHeight - containerRect.height) / 2 / this.scale);
+    
+    // 限制水平位置
+    this.translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, this.translateX));
+    
+    // 限制垂直位置
+    this.translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, this.translateY));
+  }
+
   // 关闭预览
   closePreview() {
     this.modal.classList.remove('active');
     document.body.style.overflow = '';
+    this.resetZoom(); // 关闭时重置缩放状态
   }
 }
 

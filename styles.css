@@ -189,9 +189,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .previewhub-nav-btn:hover {
@@ -206,6 +208,12 @@
 
 .previewhub-next-btn {
   right: 20px;
+}
+
+/* 鼠标悬停在图片容器上时显示导航按钮 */
+.previewhub-modal-body:hover .previewhub-nav-btn {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* 模态框底部 */
@@ -250,6 +258,13 @@
     width: 40px;
     height: 40px;
     font-size: 20px;
+    /* 移动设备上始终显示导航按钮（因为没有hover状态） */
+    opacity: 0.7;
+    visibility: visible;
+  }
+  
+  .previewhub-nav-btn:active {
+    opacity: 1;
   }
   
   .previewhub-prev-btn {
@@ -328,6 +343,129 @@ body[data-color-mode="dark"] .previewhub-modal-footer,
 body[data-color-mode="dark"] .previewhub-modal-body,
 .vscode-dark .previewhub-modal-body {
   background: #0d1117;
+}
+
+/* 缩放控制样式 */
+.previewhub-zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 4px 8px;
+}
+
+.previewhub-zoom-btn {
+  background: none;
+  border: none;
+  color: #24292f;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewhub-zoom-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.previewhub-zoom-level {
+  font-size: 12px;
+  color: #656d76;
+  font-weight: 500;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* 图片包装器样式 */
+.previewhub-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.previewhub-preview-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: transform 0.1s ease-out;
+  transform-origin: center center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.previewhub-preview-image:hover {
+  /* 移除原有的悬停缩放效果，因为现在有手动缩放 */
+  transform: none;
+}
+
+/* 缩放提示 */
+.previewhub-zoom-hint {
+  font-size: 11px;
+  color: #8b949e;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .previewhub-zoom-controls {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .previewhub-zoom-btn {
+    color: #f0f6fc;
+  }
+  
+  .previewhub-zoom-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .previewhub-zoom-level {
+    color: #8b949e;
+  }
+  
+  .previewhub-zoom-hint {
+    color: #6e7681;
+  }
+}
+
+/* GitHub.dev 编辑器特殊适配 */
+body[data-color-mode="dark"] .previewhub-zoom-controls,
+.vscode-dark .previewhub-zoom-controls {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body[data-color-mode="dark"] .previewhub-zoom-btn,
+.vscode-dark .previewhub-zoom-btn {
+  color: #e6edf3;
+}
+
+body[data-color-mode="dark"] .previewhub-zoom-btn:hover,
+.vscode-dark .previewhub-zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body[data-color-mode="dark"] .previewhub-zoom-level,
+.vscode-dark .previewhub-zoom-level {
+  color: #8b949e;
+}
+
+body[data-color-mode="dark"] .previewhub-zoom-hint,
+.vscode-dark .previewhub-zoom-hint {
+  color: #6e7681;
 }
 
 /* 图片悬停效果增强 */
