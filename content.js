@@ -23,6 +23,7 @@ class PreviewHub {
     this.createPreviewButton();
     this.setupImageClickHandlers();
     this.createModal();
+    this.createOpenIDEButton();
     
     // 监听页面变化（GitHub使用SPA路由）
     this.observePageChanges();
@@ -50,6 +51,7 @@ class PreviewHub {
         setTimeout(() => {
           this.setupImageClickHandlers();
           this.createPreviewButton();
+          this.createOpenIDEButton();
         }, 500);
       }
     });
@@ -687,7 +689,7 @@ class PreviewHub {
           url: imageUrl,
           filename: imageName,
           saveAs: false
-        }, (downloadId) => {
+        }, (_downloadId) => {
           if (chrome.runtime.lastError) {
             reject(new Error(chrome.runtime.lastError.message));
           } else {
@@ -763,6 +765,88 @@ class PreviewHub {
       info.textContent = originalText;
       info.style.color = '';
     }, 5000);
+  }
+
+  // 创建Open IDE按钮
+  createOpenIDEButton() {
+    // 只在GitHub.com上显示，不在github.dev上显示
+    if (this.isGitHubDev) return;
+    
+    // 移除已存在的按钮
+    const existingButton = document.querySelector('#previewhub-ide-button');
+    if (existingButton) {
+      existingButton.remove();
+    }
+
+    // 查找clone按钮的容器
+    const cloneButtonContainer = this.findCloneButtonContainer();
+    if (!cloneButtonContainer) return;
+
+    // 创建IDE按钮
+    const ideButton = document.createElement('button');
+    ideButton.id = 'previewhub-ide-button';
+    ideButton.className = 'btn btn-sm btn-outline mr-2';
+    ideButton.type = 'button';
+    // ideButton.innerHTML = `
+    //   <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-code mr-1">
+    //     <path fill-rule="evenodd" d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L13.94 8l-3.72-3.72a.75.75 0 0 1 1.06-1.06ZM4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 0 1-1.06 1.06L.47 7.53a.75.75 0 0 1 0-1.06l4.25-4.25Z"></path>
+    //   </svg>
+    //   Open IDE
+    // `;
+    ideButton.innerHTML = `Open Web IDE`;
+    
+    ideButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.openInIDE();
+    });
+
+    // 插入按钮到clone按钮的左边
+    cloneButtonContainer.parentNode.insertBefore(ideButton, cloneButtonContainer);
+  }
+
+  // 查找clone按钮容器
+  findCloneButtonContainer() {
+    // 尝试多种选择器来找到clone按钮
+    const selectors = [
+      '[data-testid="download-zip-button"]', // 新版GitHub
+      'get-repo-select-menu', // 旧版GitHub
+      '[aria-label*="Clone"]', // 通过aria-label查找
+      '.js-get-repo-select-menu', // JavaScript选择器
+      'summary[data-hotkey="c"]', // 快捷键选择器
+      '.btn-group .btn[data-hydro-click*="clone"]' // 通过data属性查找
+    ];
+
+    for (const selector of selectors) {
+      const element = document.querySelector(selector);
+      if (element) {
+        // 如果找到的是按钮本身，返回其最近的容器
+        if (element.tagName === 'BUTTON' || element.tagName === 'SUMMARY') {
+          return element.closest('.btn-group') || element;
+        }
+        return element;
+      }
+    }
+
+    // 备用方案：查找包含"Code"文本的按钮
+    const buttons = document.querySelectorAll('button, summary');
+    for (const button of buttons) {
+      if (button.textContent && button.textContent.trim().includes('Code')) {
+        return button.closest('.btn-group') || button;
+      }
+    }
+
+    return null;
+  }
+
+  // 打开在IDE中
+  openInIDE() {
+    const currentUrl = window.location.href;
+    
+    // 将github.com替换为github.dev
+    const ideUrl = currentUrl.replace('github.com', 'github.dev');
+    
+    // 在新标签页中打开
+    window.open(ideUrl, '_blank', 'noopener,noreferrer');
   }
 
   // 关闭预览

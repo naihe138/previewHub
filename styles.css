@@ -518,6 +518,79 @@ body[data-color-mode="dark"] .previewhub-zoom-hint,
   color: #6e7681;
 }
 
+/* Open IDE 按钮样式 */
+#previewhub-ide-button {
+  background-color: #f6f8fa !important;
+  border: 1px solid rgba(27, 31, 36, 0.15) !important;
+  color: #24292f !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 20px !important;
+  padding: 3px 12px !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  border-radius: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.2s cubic-bezier(0.3, 0, 0.5, 1) !important;
+}
+
+#previewhub-ide-button:hover {
+  background-color: #f3f4f6 !important;
+  border-color: rgba(27, 31, 36, 0.15) !important;
+  text-decoration: none !important;
+  transition-duration: 0.1s !important;
+}
+
+#previewhub-ide-button:active {
+  background-color: #edeff2 !important;
+  border-color: rgba(27, 31, 36, 0.15) !important;
+  transition: none !important;
+}
+
+#previewhub-ide-button svg {
+  fill: currentColor !important;
+  margin-right: 4px !important;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  #previewhub-ide-button {
+    background-color: #21262d !important;
+    border-color: rgba(240, 246, 252, 0.1) !important;
+    color: #f0f6fc !important;
+  }
+  
+  #previewhub-ide-button:hover {
+    background-color: #30363d !important;
+    border-color: rgba(240, 246, 252, 0.15) !important;
+  }
+  
+  #previewhub-ide-button:active {
+    background-color: #282e33 !important;
+  }
+}
+
+/* GitHub深色主题适配 */
+[data-color-mode="dark"] #previewhub-ide-button {
+  background-color: #21262d !important;
+  border-color: rgba(240, 246, 252, 0.1) !important;
+  color: #f0f6fc !important;
+}
+
+[data-color-mode="dark"] #previewhub-ide-button:hover {
+  background-color: #30363d !important;
+  border-color: rgba(240, 246, 252, 0.15) !important;
+}
+
+[data-color-mode="dark"] #previewhub-ide-button:active {
+  background-color: #282e33 !important;
+}
+
 /* 图片悬停效果增强 */
 .markdown-body img {
   transition: all 0.2s ease;
