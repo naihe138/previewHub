@@ -1,0 +1,72 @@
+# PreviewHub 打包排除文件列表
+# 类似于 .gitignore，定义哪些文件不应该包含在商店发布包中
+
+# 文档文件
+README.md
+PROJECT_SUMMARY.md
+STORE_UPLOAD_GUIDE.md
+STORE_CHECKLIST.md
+INSTALL.md
+TEST.md
+LICENSE
+
+# 配置文件
+package.json
+.gitignore
+.packageignore
+
+# 版本控制
+.git/
+.DS_Store
+
+# 构建和开发工具
+package-for-store.sh
+*.zip
+
+# 图标开发文件
+create_icons.html
+icons/create_*.html
+icons/create_*.py
+icons/generate_*.js
+icons/icon.svg
+
+# 备份和临时文件
+*.bak
+*.tmp
+*~
+.#*
+
+# IDE和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志文件
+*.log
+npm-debug.log*
+
+# 测试文件
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# 源码映射
+*.map
+
+# 环境文件
+.env
+.env.local
+.env.development
+.env.production
+
+# 依赖目录
+node_modules/
+bower_components/
+
+# 构建输出
+dist/
+build/
+release/
