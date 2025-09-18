@@ -29,6 +29,7 @@ icons/create_*.html
 icons/create_*.py
 icons/generate_*.js
 icons/icon.svg
+posters.html
 
 # 备份和临时文件
 *.bak

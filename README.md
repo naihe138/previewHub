@@ -4,9 +4,9 @@
 
 
 <div style="width: 100%; display: flex">
- <img style="width: 33%" src="./previewTest/p1.png"/>
- <img style="width: 33%" src="./previewTest/p2.png"/>
- <img style="width: 33%" src="./previewTest/p3.png"/>
+ <img style="width: 30%" src="./previewTest/p1.png"/>
+ <img style="width: 30%" src="./previewTest/p2.png"/>
+ <img style="width: 30%" src="./previewTest/p3.png"/>
 </div>
 
 
