@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PreviewHub Icon Generator</title>
+</head>
+<body>
+    <h1>PreviewHub 图标生成器</h1>
+    <p>这个页面将生成插件所需的图标文件</p>
+    
+    <canvas id="canvas16" width="16" height="16" style="border:1px solid #ccc; margin:5px;"></canvas>
+    <canvas id="canvas48" width="48" height="48" style="border:1px solid #ccc; margin:5px;"></canvas>
+    <canvas id="canvas128" width="128" height="128" style="border:1px solid #ccc; margin:5px;"></canvas>
+    
+    <div>
+        <button onclick="generateIcons()">生成图标</button>
+        <button onclick="downloadIcons()">下载图标</button>
+    </div>
+    
+    <div id="output" style="margin-top:20px;"></div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // 清空画布
+            ctx.clearRect(0, 0, size, size);
+            
+            // 背景圆角矩形
+            ctx.fillStyle = '#0969da';
+            ctx.beginPath();
+            const cornerRadius = size / 8;
+            ctx.roundRect(1, 1, size-2, size-2, cornerRadius);
+            ctx.fill();
+            
+            // 相机主体
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = Math.max(1, size / 32);
+            ctx.beginPath();
+            const rectWidth = size * 0.6;
+            const rectHeight = size * 0.4;
+            const rectX = (size - rectWidth) / 2;
+            const rectY = size * 0.35;
+            ctx.roundRect(rectX, rectY, rectWidth, rectHeight, size / 32);
+            ctx.stroke();
+            
+            // 镜头
+            ctx.beginPath();
+            const lensRadius = size / 8;
+            ctx.arc(size/2, size/2, lensRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // 镜头中心
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/16, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 取景器
+            const viewfinderWidth = size / 4;
+            const viewfinderHeight = Math.max(2, size / 24);
+            const viewfinderX = (size - viewfinderWidth) / 2;
+            const viewfinderY = rectY - viewfinderHeight - 2;
+            ctx.fillRect(viewfinderX, viewfinderY, viewfinderWidth, viewfinderHeight);
+        }
+        
+        function generateIcons() {
+            const sizes = [16, 48, 128];
+            
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`canvas${size}`);
+                drawIcon(canvas, size);
+            });
+            
+            document.getElementById('output').innerHTML = '<p>图标已生成！点击"下载图标"按钮保存文件。</p>';
+        }
+        
+        function downloadIcons() {
+            const sizes = [16, 48, 128];
+            
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`canvas${size}`);
+                const link = document.createElement('a');
+                link.download = `icon${size}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // 添加roundRect方法支持（如果浏览器不支持）
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                if (typeof radius === 'undefined') {
+                    radius = 5;
+                }
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+        
+        // 页面加载时自动生成图标
+        window.onload = function() {
+            generateIcons();
+        };
+    </script>
+</body>
+</html>

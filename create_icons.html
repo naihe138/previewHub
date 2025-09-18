@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PreviewHub Icon Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        button { padding: 10px 20px; margin: 5px; background: #0969da; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0860ca; }
+        .generated { margin-top: 20px; padding: 10px; background: #f0f8ff; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>PreviewHub 图标生成器</h1>
+    
+    <div>
+        <canvas id="canvas16" width="16" height="16"></canvas>
+        <canvas id="canvas48" width="48" height="48"></canvas>
+        <canvas id="canvas128" width="128" height="128"></canvas>
+    </div>
+    
+    <div>
+        <button onclick="generateAndDownload()">生成并下载图标</button>
+        <button onclick="generateIcons()">仅生成预览</button>
+    </div>
+    
+    <div id="status" class="generated" style="display: none;"></div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // 清空画布
+            ctx.clearRect(0, 0, size, size);
+            
+            // 背景圆角矩形
+            ctx.fillStyle = '#0969da';
+            ctx.beginPath();
+            const cornerRadius = Math.max(1, size / 8);
+            roundRect(ctx, 1, 1, size-2, size-2, cornerRadius);
+            ctx.fill();
+            
+            // 相机主体
+            ctx.strokeStyle = '#ffffff';
+            ctx.fillStyle = '#ffffff';
+            ctx.lineWidth = Math.max(1, size / 32);
+            
+            const rectWidth = size * 0.6;
+            const rectHeight = size * 0.4;
+            const rectX = (size - rectWidth) / 2;
+            const rectY = size * 0.35;
+            
+            ctx.strokeRect(rectX, rectY, rectWidth, rectHeight);
+            
+            // 镜头外圈
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const lensRadius = Math.max(2, size / 8);
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, lensRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // 镜头内圈
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, Math.max(1, lensRadius * 0.6), 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 取景器
+            if (size >= 32) {
+                const viewfinderWidth = size / 4;
+                const viewfinderHeight = Math.max(1, size / 16);
+                const viewfinderX = (size - viewfinderWidth) / 2;
+                const viewfinderY = rectY - viewfinderHeight - Math.max(1, size / 32);
+                
+                ctx.fillRect(viewfinderX, viewfinderY, viewfinderWidth, viewfinderHeight);
+            }
+            
+            // 小装饰点（只在大图标上显示）
+            if (size >= 48) {
+                const dotSize = Math.max(1, size / 24);
+                ctx.fillRect(rectX + rectWidth - dotSize * 3, rectY + dotSize, dotSize, dotSize);
+                ctx.fillRect(rectX + rectWidth - dotSize * 3, rectY + dotSize * 3, dotSize, dotSize);
+            }
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+        }
+        
+        function generateIcons() {
+            const sizes = [16, 48, 128];
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`canvas${size}`);
+                drawIcon(canvas, size);
+            });
+            
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = '<strong>图标已生成！</strong>现在可以点击"生成并下载图标"按钮下载文件。';
+        }
+        
+        function generateAndDownload() {
+            generateIcons();
+            
+            const sizes = [16, 48, 128];
+            let downloadCount = 0;
+            
+            sizes.forEach((size, index) => {
+                setTimeout(() => {
+                    const canvas = document.getElementById(`canvas${size}`);
+                    const link = document.createElement('a');
+                    link.download = `icon${size}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    downloadCount++;
+                    if (downloadCount === sizes.length) {
+                        document.getElementById('status').innerHTML = '<strong>✅ 所有图标已下载完成！</strong><br>请将下载的图标文件移动到 icons/ 文件夹中替换现有文件。';
+                    }
+                }, index * 500);
+            });
+        }
+        
+        // 页面加载时自动生成预览
+        window.onload = generateIcons;
+    </script>
+</body>
+</html>

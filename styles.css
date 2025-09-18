@@ -1,0 +1,342 @@
+/* PreviewHub - GitHub图片预览插件样式 */
+
+/* 预览按钮样式 */
+.previewhub-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  margin: 8px 0;
+  background: #0969da;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  position: relative;
+}
+
+.previewhub-preview-btn:hover {
+  background: #0860ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(9, 105, 218, 0.3);
+}
+
+.previewhub-preview-btn:active {
+  transform: translateY(0);
+}
+
+.previewhub-preview-btn svg {
+  opacity: 0.9;
+}
+
+/* 模态框样式 */
+.previewhub-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.previewhub-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.previewhub-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.previewhub-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.previewhub-modal.active .previewhub-modal-content {
+  transform: scale(1);
+}
+
+/* 模态框头部 */
+.previewhub-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e1e4e8;
+  background: #f6f8fa;
+}
+
+.previewhub-modal-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #24292f;
+}
+
+.previewhub-modal-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.previewhub-image-counter {
+  font-size: 14px;
+  color: #656d76;
+  font-weight: 500;
+}
+
+.previewhub-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #656d76;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.previewhub-close-btn:hover {
+  background: #f3f4f6;
+  color: #24292f;
+}
+
+/* 模态框主体 */
+.previewhub-modal-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 400px;
+  background: #fafbfc;
+}
+
+.previewhub-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+}
+
+.previewhub-preview-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.previewhub-preview-image:hover {
+  transform: scale(1.02);
+}
+
+.previewhub-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #656d76;
+  font-size: 14px;
+}
+
+/* 导航按钮 */
+.previewhub-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 24px;
+  color: #24292f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.previewhub-nav-btn:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.previewhub-prev-btn {
+  left: 20px;
+}
+
+.previewhub-next-btn {
+  right: 20px;
+}
+
+/* 模态框底部 */
+.previewhub-modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e1e4e8;
+  background: #f6f8fa;
+}
+
+.previewhub-image-info {
+  margin: 0;
+  font-size: 14px;
+  color: #656d76;
+  text-align: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .previewhub-modal-overlay {
+    padding: 10px;
+  }
+  
+  .previewhub-modal-content {
+    width: 100%;
+    max-height: 95vh;
+  }
+  
+  .previewhub-modal-header,
+  .previewhub-modal-footer {
+    padding: 12px 16px;
+  }
+  
+  .previewhub-image-container {
+    padding: 15px;
+  }
+  
+  .previewhub-preview-image {
+    max-height: 50vh;
+  }
+  
+  .previewhub-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .previewhub-prev-btn {
+    left: 10px;
+  }
+  
+  .previewhub-next-btn {
+    right: 10px;
+  }
+}
+
+/* GitHub 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .previewhub-modal-content {
+    background: #0d1117;
+    color: #f0f6fc;
+  }
+  
+  .previewhub-modal-header,
+  .previewhub-modal-footer {
+    background: #161b22;
+    border-color: #30363d;
+  }
+  
+  .previewhub-modal-title {
+    color: #f0f6fc;
+  }
+  
+  .previewhub-image-counter,
+  .previewhub-image-info {
+    color: #8b949e;
+  }
+  
+  .previewhub-close-btn {
+    color: #8b949e;
+  }
+  
+  .previewhub-close-btn:hover {
+    background: #21262d;
+    color: #f0f6fc;
+  }
+  
+  .previewhub-modal-body {
+    background: #0d1117;
+  }
+  
+  .previewhub-loading {
+    color: #8b949e;
+  }
+  
+  .previewhub-nav-btn {
+    background: rgba(13, 17, 23, 0.9);
+    color: #f0f6fc;
+  }
+  
+  .previewhub-nav-btn:hover {
+    background: #0d1117;
+  }
+}
+
+/* GitHub.dev 编辑器特殊适配 */
+body[data-color-mode="dark"] .previewhub-modal-content,
+.vscode-dark .previewhub-modal-content {
+  background: #1f2328;
+  color: #e6edf3;
+}
+
+body[data-color-mode="dark"] .previewhub-modal-header,
+body[data-color-mode="dark"] .previewhub-modal-footer,
+.vscode-dark .previewhub-modal-header,
+.vscode-dark .previewhub-modal-footer {
+  background: #161b22;
+  border-color: #30363d;
+}
+
+body[data-color-mode="dark"] .previewhub-modal-body,
+.vscode-dark .previewhub-modal-body {
+  background: #0d1117;
+}
+
+/* 图片悬停效果增强 */
+.markdown-body img {
+  transition: all 0.2s ease;
+}
+
+.markdown-body img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}

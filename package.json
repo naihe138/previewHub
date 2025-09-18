@@ -1,0 +1,53 @@
+{
+  "name": "previewhub-github-image-preview",
+  "version": "1.0.0",
+  "description": "在GitHub页面直接预览README.md中的图片，支持弹窗浏览和导航，兼容github.dev编辑器",
+  "main": "content.js",
+  "scripts": {
+    "build": "echo 'Building PreviewHub extension...' && echo 'No build process needed for this extension.'",
+    "test": "echo 'Testing PreviewHub extension...' && echo 'Please test manually by loading the extension in Chrome.'",
+    "lint": "echo 'Linting PreviewHub extension...' && echo 'Please use your IDE linter or Chrome extension validation.'",
+    "pack": "echo 'Packing extension for distribution...' && zip -r previewhub-extension.zip . -x '*.git*' 'node_modules/*' 'package*.json' '*.md' 'icons/create*' 'icons/generate*'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "github",
+    "image-preview",
+    "readme",
+    "browser-extension",
+    "github-dev",
+    "preview",
+    "image-viewer"
+  ],
+  "author": {
+    "name": "PreviewHub Team",
+    "url": "https://github.com/naice/previewHub"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naice/previewHub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/naice/previewHub/issues"
+  },
+  "homepage": "https://github.com/naice/previewHub#readme",
+  "engines": {
+    "chrome": ">=88.0.0"
+  },
+  "browserslist": [
+    "Chrome >= 88"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "files": [
+    "manifest.json",
+    "content.js",
+    "styles.css",
+    "popup.html",
+    "popup.js",
+    "icons/*.png",
+    "LICENSE",
+    "README.md"
+  ]
+}

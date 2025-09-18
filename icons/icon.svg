@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆角矩形 -->
+  <rect x="4" y="4" width="120" height="120" rx="16" ry="16" fill="#0969da"/>
+  
+  <!-- 相机主体 -->
+  <rect x="24" y="40" width="80" height="56" rx="4" ry="4" fill="none" stroke="#ffffff" stroke-width="3"/>
+  
+  <!-- 镜头外圈 -->
+  <circle cx="64" cy="68" r="18" fill="none" stroke="#ffffff" stroke-width="3"/>
+  
+  <!-- 镜头内圈 -->
+  <circle cx="64" cy="68" r="10" fill="none" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- 镜头中心点 -->
+  <circle cx="64" cy="68" r="4" fill="#ffffff"/>
+  
+  <!-- 取景器 -->
+  <rect x="52" y="32" width="24" height="4" rx="2" ry="2" fill="#ffffff"/>
+  
+  <!-- 预览指示器（小方块） -->
+  <rect x="84" y="48" width="8" height="6" rx="1" ry="1" fill="#ffffff"/>
+  <rect x="84" y="58" width="8" height="6" rx="1" ry="1" fill="#ffffff"/>
+  <rect x="84" y="68" width="8" height="6" rx="1" ry="1" fill="#ffffff"/>
+</svg>
