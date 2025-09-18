@@ -105,7 +105,7 @@ previewHub/
 ### 本地开发
 ```bash
 # 克隆仓库
-git clone https://github.com/naice/previewHub.git
+git clone https://github.com/naihe138/previewHub
 
 # 进入目录
 cd previewHub

@@ -70,3 +70,4 @@ bower_components/
 dist/
 build/
 release/
+previewTest/
