@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PreviewHub - GitHub图片预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      min-height: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: #ffffff;
+      color: #24292f;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0969da, #0860ca);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f6f8fa;
+      border-radius: 8px;
+      border-left: 3px solid #0969da;
+    }
+
+    .feature-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 12px;
+      opacity: 0.8;
+    }
+
+    .feature-text {
+      flex: 1;
+    }
+
+    .feature-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: #656d76;
+    }
+
+    .status {
+      background: #f6f8fa;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .status-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #28a745;
+    }
+
+    .status-indicator.inactive {
+      background: #ffa500;
+    }
+
+    .usage {
+      background: #e7f3ff;
+      border: 1px solid #b6e3ff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .usage-title {
+      font-weight: 600;
+      color: #0969da;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .usage-steps {
+      list-style: none;
+      counter-reset: step-counter;
+    }
+
+    .usage-steps li {
+      counter-increment: step-counter;
+      margin-bottom: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .usage-steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: #0969da;
+      color: white;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .footer {
+      padding: 16px 20px;
+      border-top: 1px solid #e1e4e8;
+      background: #f6f8fa;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .footer-link {
+      color: #0969da;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .footer-link:hover {
+      text-decoration: underline;
+    }
+
+    .footer-version {
+      font-size: 11px;
+      color: #656d76;
+    }
+
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #24292f;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 12px;
+      transition: background 0.2s ease;
+    }
+
+    .github-link:hover {
+      background: #32383f;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #0d1117;
+        color: #f0f6fc;
+      }
+
+      .feature {
+        background: #161b22;
+        border-left-color: #58a6ff;
+      }
+
+      .feature-desc {
+        color: #8b949e;
+      }
+
+      .status {
+        background: #161b22;
+      }
+
+      .usage {
+        background: #0c2d6b;
+        border-color: #1f6feb;
+      }
+
+      .usage-title {
+        color: #58a6ff;
+      }
+
+      .usage-steps li::before {
+        background: #58a6ff;
+      }
+
+      .footer {
+        background: #161b22;
+        border-color: #30363d;
+      }
+
+      .footer-link {
+        color: #58a6ff;
+      }
+
+      .footer-version {
+        color: #8b949e;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🖼️ PreviewHub</h1>
+    <p>GitHub图片预览增强工具</p>
+  </div>
+
+  <div class="content">
+    <div class="status">
+      <div class="status-title">
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span id="statusText">检测页面状态...</span>
+      </div>
+    </div>
+
+    <div class="usage">
+      <div class="usage-title">📖 使用说明</div>
+      <ol class="usage-steps">
+        <li>访问任何GitHub项目页面</li>
+        <li>查看README.md中的图片</li>
+        <li>点击图片或"预览图片"按钮</li>
+        <li>在弹窗中浏览所有图片</li>
+      </ol>
+    </div>
+
+    <div class="feature">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 9a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        <path fill-rule="evenodd" d="M10.394 5.135a.75.75 0 01.712-.135l8.5 2a.75.75 0 01.394.94l-2 8.5a.75.75 0 01-.94.394l-8.5-2a.75.75 0 01-.394-.94l2-8.5z" clip-rule="evenodd"></path>
+      </svg>
+      <div class="feature-text">
+        <div class="feature-title">智能预览</div>
+        <div class="feature-desc">自动检测README中的图片并提供预览</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" d="M7.22 3.22A.75.75 0 018 3h8a.75.75 0 01.78.22l4.5 4.5a.75.75 0 01.22.78v8a.75.75 0 01-.22.78l-4.5 4.5A.75.75 0 0116 21H8a.75.75 0 01-.78-.22l-4.5-4.5A.75.75 0 013 16V8a.75.75 0 01.22-.78l4.5-4.5z" clip-rule="evenodd"></path>
+      </svg>
+      <div class="feature-text">
+        <div class="feature-title">快捷导航</div>
+        <div class="feature-desc">支持键盘快捷键和鼠标导航</div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" d="M12.75 2.75a.75.75 0 00-1.5 0V4.5H9.276a1.75 1.75 0 00-.985.303L6.596 5.957A.25.25 0 016.455 6H2.353a.75.75 0 100 1.5H3.93L.563 10.846a.75.75 0 00.874 1.229l3.288-2.332a1.75 1.75 0 00.746-1.398V6.085l1.696-1.154A.25.25 0 019.275 6h1.975v14.5H6.763a.75.75 0 000 1.5h10.474a.75.75 0 000-1.5H12.75V6h1.974c.05 0 .1.015.14.043l1.697 1.154v2.26c0 .553.286 1.067.746 1.398l3.288 2.332a.75.75 0 00.874-1.229L18.07 7.5h1.578a.75.75 0 000-1.5h-4.102a.25.25 0 01-.14-.043L13.71 4.803a1.75 1.75 0 00-.985-.303H12.75V2.75z" clip-rule="evenodd"></path>
+      </svg>
+      <div class="feature-text">
+        <div class="feature-title">多平台支持</div>
+        <div class="feature-desc">支持GitHub.com和GitHub.dev编辑器</div>
+      </div>
+    </div>
+
+    <a href="https://github.com/naihe138/previewHub" class="github-link" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+      </svg>
+      查看源代码
+    </a>
+  </div>
+
+  <div class="footer">
+    <div class="footer-links">
+      <a href="#" class="footer-link" id="feedbackLink">反馈建议</a>
+      <a href="#" class="footer-link" id="helpLink">使用帮助</a>
+    </div>
+    <div class="footer-version">版本 1.0.0</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

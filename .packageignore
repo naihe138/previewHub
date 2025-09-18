@@ -10,6 +10,7 @@ INSTALL.md
 TEST.md
 BUG_FIX_REPORT.md
 CHANGELOG.md
+GITHUB_RELEASE_GUIDE.md
 LICENSE
 
 # 配置文件
@@ -23,6 +24,9 @@ package.json
 
 # 构建和开发工具
 package-for-store.sh
+create-github-release.sh
+release.sh
+package-smart.sh
 *.zip
 
 # 图标开发文件
