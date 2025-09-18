@@ -35,13 +35,17 @@ class PreviewHub {
       let shouldReinit = false;
       mutations.forEach(mutation => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          // 检查是否有新的README内容加载
-          const hasReadmeContent = Array.from(mutation.addedNodes).some(node => 
+          // 检查是否有新的Markdown内容加载（包括README和其他.md文件）
+          const hasMarkdownContent = Array.from(mutation.addedNodes).some(node => 
             node.nodeType === 1 && 
             (node.querySelector?.('[data-testid="readme"]') || 
-             node.classList?.contains('markdown-body'))
+             node.classList?.contains('markdown-body') ||
+             node.querySelector?.('.markdown-body') ||
+             node.querySelector?.('.js-file-content .markdown-body') ||
+             node.classList?.contains('markdown-content') ||
+             node.classList?.contains('wiki-content'))
           );
-          if (hasReadmeContent) {
+          if (hasMarkdownContent) {
             shouldReinit = true;
           }
         }
@@ -70,10 +74,10 @@ class PreviewHub {
       existingButton.remove();
     }
 
-    const readmeContainer = this.getReadmeContainer();
-    if (!readmeContainer) return;
+    const markdownContainer = this.getMarkdownContainer();
+    if (!markdownContainer) return;
 
-    const images = this.findReadmeImages(readmeContainer);
+    const images = this.findMarkdownImages(markdownContainer);
     if (images.length === 0) return;
 
     const button = document.createElement('button');
@@ -92,32 +96,45 @@ class PreviewHub {
       this.openPreview();
     });
 
-    // 插入按钮到README标题附近
-    const readmeHeader = readmeContainer.querySelector('h1, h2, .markdown-heading');
-    if (readmeHeader) {
-      readmeHeader.parentNode.insertBefore(button, readmeHeader.nextSibling);
+    // 插入按钮到Markdown标题附近
+    const markdownHeader = markdownContainer.querySelector('h1, h2, .markdown-heading');
+    if (markdownHeader) {
+      markdownHeader.parentNode.insertBefore(button, markdownHeader.nextSibling);
     } else {
-      readmeContainer.insertBefore(button, readmeContainer.firstChild);
+      markdownContainer.insertBefore(button, markdownContainer.firstChild);
     }
   }
 
-  // 获取README容器
-  getReadmeContainer() {
-    // GitHub主站
+  // 获取Markdown容器（支持所有.md文件）
+  getMarkdownContainer() {
+    // GitHub主站 - README文件
     let container = document.querySelector('[data-testid="readme"]');
     if (container) return container;
 
-    // GitHub.dev 编辑器
+    // GitHub主站 - 其他markdown文件
     container = document.querySelector('.markdown-body');
     if (container) return container;
 
-    // 备用选择器
-    container = document.querySelector('#readme, .readme, [class*="readme"]');
+    // GitHub.dev 编辑器 - markdown预览
+    container = document.querySelector('.monaco-editor-background + .markdown-body, .markdown-preview-view .markdown-body');
+    if (container) return container;
+
+    // 文件查看页面的markdown内容
+    container = document.querySelector('[data-target="react-app.embeddedData"] .markdown-body, .js-file-content .markdown-body');
+    if (container) return container;
+
+    // 备用选择器 - 包括README和其他markdown文件
+    container = document.querySelector('#readme, .readme, [class*="readme"], .markdown-content, .wiki-content');
     return container;
   }
 
-  // 查找README中的图片
-  findReadmeImages(container) {
+  // 为了保持向后兼容性，保留原方法名
+  getReadmeContainer() {
+    return this.getMarkdownContainer();
+  }
+
+  // 查找Markdown文件中的图片
+  findMarkdownImages(container) {
     const images = [];
     const imgElements = container.querySelectorAll('img');
     
@@ -140,6 +157,11 @@ class PreviewHub {
     });
     
     return images;
+  }
+
+  // 向后兼容方法
+  findReadmeImages(container) {
+    return this.findMarkdownImages(container);
   }
 
   // 解析图片URL
@@ -176,10 +198,10 @@ class PreviewHub {
 
   // 设置图片点击处理
   setupImageClickHandlers() {
-    const readmeContainer = this.getReadmeContainer();
-    if (!readmeContainer) return;
+    const markdownContainer = this.getMarkdownContainer();
+    if (!markdownContainer) return;
 
-    const images = readmeContainer.querySelectorAll('img');
+    const images = markdownContainer.querySelectorAll('img');
     images.forEach((img, index) => {
       // 移除已有的点击处理
       img.removeEventListener('click', this.handleImageClick);
@@ -343,10 +365,10 @@ class PreviewHub {
 
   // 打开预览
   openPreview(startIndex = 0) {
-    const readmeContainer = this.getReadmeContainer();
-    if (!readmeContainer) return;
+    const markdownContainer = this.getMarkdownContainer();
+    if (!markdownContainer) return;
 
-    this.images = this.findReadmeImages(readmeContainer);
+    this.images = this.findMarkdownImages(markdownContainer);
     if (this.images.length === 0) return;
 
     this.currentIndex = Math.max(0, Math.min(startIndex, this.images.length - 1));
@@ -860,9 +882,9 @@ class PreviewHub {
 // 消息监听器
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'getImageCount') {
-    const readmeContainer = previewHub ? previewHub.getReadmeContainer() : null;
-    if (readmeContainer) {
-      const images = previewHub.findReadmeImages(readmeContainer);
+    const markdownContainer = previewHub ? previewHub.getMarkdownContainer() : null;
+    if (markdownContainer) {
+      const images = previewHub.findMarkdownImages(markdownContainer);
       sendResponse({ count: images.length, images: images.map(img => ({ src: img.src, alt: img.alt })) });
     } else {
       sendResponse({ count: 0, images: [] });
@@ -881,9 +903,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   
   if (request.action === 'getStatus') {
-    const readmeContainer = previewHub ? previewHub.getReadmeContainer() : null;
-    const isActive = !!readmeContainer;
-    const imageCount = readmeContainer ? previewHub.findReadmeImages(readmeContainer).length : 0;
+    const markdownContainer = previewHub ? previewHub.getMarkdownContainer() : null;
+    const isActive = !!markdownContainer;
+    const imageCount = markdownContainer ? previewHub.findMarkdownImages(markdownContainer).length : 0;
     
     sendResponse({
       isActive,

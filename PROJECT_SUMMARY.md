@@ -4,7 +4,7 @@
 
 ✅ **PreviewHub (GitHub图片预览)** 浏览器插件开发完成！
 
-这是一个功能完整的Chrome浏览器插件，可以在GitHub页面直接预览README.md中的图片，无需跳转到单独的图片页面。
+这是一个功能完整的Chrome浏览器插件，可以在GitHub页面直接预览所有.md文件中的图片，无需跳转到单独的图片页面。
 
 ## 📁 项目结构
 
@@ -35,7 +35,7 @@ previewHub/
 ## ✨ 核心功能
 
 ### 🔍 智能图片检测
-- ✅ 自动识别README.md中的所有图片
+- ✅ 自动识别所有.md文件中的图片（README、文档、Wiki等）
 - ✅ 支持相对路径和绝对路径
 - ✅ 智能解析GitHub raw链接
 - ✅ 支持多种图片格式 (PNG, JPG, GIF, SVG, WebP等)
@@ -89,6 +89,7 @@ previewHub/
 ## 🎯 项目亮点
 
 ### 💡 创新功能
+- **全面Markdown支持**: 支持所有.md文件类型（README、文档、Wiki等）
 - **智能URL解析**: 自动处理GitHub的相对路径图片链接
 - **实时页面监控**: 监听SPA路由变化，自动重新初始化
 - **双平台兼容**: 同时支持GitHub.com和GitHub.dev

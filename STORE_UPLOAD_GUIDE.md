@@ -15,7 +15,7 @@
 ### ✅ 插件信息确认
 - **名称**: PreviewHub (GitHub图片预览)
 - **版本**: 1.0.0
-- **描述**: 在GitHub页面直接预览README.md中的图片，支持弹窗浏览和导航，兼容github.dev编辑器
+- **描述**: 在GitHub页面直接预览所有.md文件中的图片，支持弹窗浏览和导航，兼容github.dev编辑器
 - **权限**: activeTab, storage, downloads
 - **支持网站**: GitHub.com, GitHub.dev
 
@@ -58,15 +58,15 @@
 
 **简短描述（132字符以内）**：
 ```
-在GitHub页面直接预览README中的图片，支持弹窗浏览、键盘导航，兼容github.dev编辑器
+在GitHub页面直接预览所有.md文件中的图片，支持弹窗浏览、键盘导航，兼容github.dev编辑器
 ```
 
 **详细描述**：
 ```
-🖼️ PreviewHub 让您在GitHub页面上直接预览README.md中的图片，无需跳转到单独的图片页面。
+🖼️ PreviewHub 让您在GitHub页面上直接预览所有.md文件中的图片，无需跳转到单独的图片页面。
 
 ✨ 主要功能：
-• 🔍 智能检测README中的所有图片
+• 🔍 智能检测所有.md文件中的图片（包括README、文档、Wiki等）
 • 🖱️ 点击图片或按钮即可预览
 • 📱 响应式设计，支持桌面和移动设备
 • ⌨️ 键盘导航支持（方向键切换，ESC关闭）

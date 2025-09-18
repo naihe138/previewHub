@@ -9,7 +9,7 @@ echo "================================"
 # 创建发布目录
 RELEASE_DIR="previewhub-release"
 TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-ZIP_NAME="previewhub-v1.0.0-${TIMESTAMP}.zip"
+ZIP_NAME="previewhub-v1.1.0-${TIMESTAMP}.zip"
 
 # 清理旧的发布文件
 if [ -d "$RELEASE_DIR" ]; then
