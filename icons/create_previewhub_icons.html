@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PreviewHub Icon Generator - GitHub Style</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; 
+            padding: 20px; 
+            background: #f6f8fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        h1 {
+            color: #24292f;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .preview-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f6f8fa;
+            border-radius: 8px;
+        }
+        canvas { 
+            border: 2px solid #d1d9e0; 
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .canvas-label {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #656d76;
+            font-weight: 500;
+        }
+        .canvas-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        button { 
+            padding: 12px 24px; 
+            margin: 8px; 
+            background: #0969da; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        button:hover { 
+            background: #0860ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(9, 105, 218, 0.3);
+        }
+        .button-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .status { 
+            margin-top: 20px; 
+            padding: 16px; 
+            background: #dafbe1; 
+            border: 1px solid #2da44e;
+            border-radius: 6px;
+            display: none;
+            text-align: center;
+            color: #1a7f37;
+            font-weight: 500;
+        }
+        .description {
+            background: #fff8dc;
+            border: 1px solid #d4a72c;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+            color: #6f4e37;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ PreviewHub 图标生成器</h1>
+        
+        <div class="description">
+            <strong>微调设计理念：</strong>GitHub图标与图片图标的完美结合，经过精心调整的布局比例。
+            <br><br>
+            <strong>设计元素：</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>GitHub官方蓝色背景 (#0969da)</li>
+                <li>微调后的GitHub图标 (位置: y=48, 缩放: 1.3x)</li>
+                <li>简洁的图片框架 (下半部分)</li>
+                <li>山峰图标表示图片内容</li>
+                <li>太阳图标与GitHub图标居中对齐</li>
+            </ul>
+        </div>
+        
+        <div class="preview-section">
+            <div class="canvas-container">
+                <canvas id="canvas16" width="16" height="16"></canvas>
+                <div class="canvas-label">16×16</div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas48" width="48" height="48"></canvas>
+                <div class="canvas-label">48×48</div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas128" width="128" height="128"></canvas>
+                <div class="canvas-label">128×128</div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas512" width="512" height="512"></canvas>
+                <div class="canvas-label">512×512</div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button onclick="generateAndDownload()">🎨 生成并下载图标</button>
+            <button onclick="generateIcons()" style="background: #6e7681;">👀 仅生成预览</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function drawPreviewHubIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const scale = size / 128; // 基于128px设计缩放
+            
+            // 清空画布
+            ctx.clearRect(0, 0, size, size);
+            
+            // 缩放上下文
+            ctx.save();
+            ctx.scale(scale, scale);
+            
+            // GitHub蓝色背景
+            ctx.fillStyle = '#0969da';
+            ctx.beginPath();
+            roundRect(ctx, 4, 4, 120, 120, 20);
+            ctx.fill();
+            
+            // GitHub图标 - 微调版 (上半部分)
+            if (size >= 32) {
+                ctx.fillStyle = '#ffffff';
+                drawGitHubIcon(ctx, 64, 48, 31); // 中心点和放大的大小 (24 * 1.3 = 31.2 ≈ 31)
+            } else {
+                // 16px版本使用更简单的GitHub图标
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(64, 48, 12, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // 简单的GitHub标识
+                ctx.fillStyle = '#0969da';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('G', 64, 52);
+            }
+            
+            // 太阳 - 与GitHub图标垂直居中对齐
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(85, 48, 3, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 图片框架 (下半部分)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            roundRect(ctx, 20, 78, 88, 36, 4);
+            ctx.fill();
+            
+            // 山峰图标（图片内容）
+            ctx.fillStyle = 'rgba(9, 105, 218, 0.8)';
+            ctx.beginPath();
+            ctx.moveTo(28, 106);
+            ctx.lineTo(40, 93);
+            ctx.lineTo(52, 100);
+            ctx.lineTo(64, 86);
+            ctx.lineTo(76, 96);
+            ctx.lineTo(88, 90);
+            ctx.lineTo(100, 104);
+            ctx.lineTo(100, 106);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 图片边框
+            ctx.strokeStyle = 'rgba(9, 105, 218, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            roundRect(ctx, 20, 78, 88, 36, 4);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        // 绘制简化的GitHub图标
+        function drawGitHubIcon(ctx, centerX, centerY, radius) {
+            const scale = radius / 24; // 基于GitHub图标尺寸缩放
+            
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.scale(scale, scale);
+            
+            // GitHub图标路径 (缩小版)
+            ctx.beginPath();
+            ctx.moveTo(0, -24);
+            ctx.bezierCurveTo(-13.2, -24, -24, -13.2, -24, 0);
+            ctx.bezierCurveTo(-24, 10.6, -17.1, 19.5, -7.7, 22.7);
+            ctx.lineTo(-7.7, 18.8);
+            ctx.bezierCurveTo(-14.3, 17.3, -15.7, 15.6, -15.7, 15.6);
+            ctx.bezierCurveTo(-16.8, 12.9, -18.3, 12.2, -18.3, 12.2);
+            ctx.bezierCurveTo(-20.4, 10.7, -18.2, 10.8, -18.2, 10.8);
+            ctx.bezierCurveTo(-15.8, 10.9, -14.5, 13.3, -14.5, 13.3);
+            ctx.bezierCurveTo(-12.4, 16.9, -9, 15.8, -7.6, 15.2);
+            ctx.bezierCurveTo(-7.4, 13.7, -6.8, 12.7, -6.1, 12.1);
+            ctx.bezierCurveTo(-11.4, 11.5, -17, 9.5, -17, 0.3);
+            ctx.bezierCurveTo(-17, -2.3, -16.1, -4.4, -14.5, -6.1);
+            ctx.bezierCurveTo(-14.7, -6.7, -15.6, -9.2, -14.3, -12.5);
+            ctx.bezierCurveTo(-14.3, -12.5, -12.3, -13.1, -7.8, -10);
+            ctx.bezierCurveTo(-5.9, -10.6, -3.8, -10.8, -1.8, -10.8);
+            ctx.bezierCurveTo(0.2, -10.8, 2.3, -10.6, 4.2, -10);
+            ctx.bezierCurveTo(8.8, -13.1, 10.8, -12.5, 10.8, -12.5);
+            ctx.bezierCurveTo(12.1, -9.2, 11.3, -6.7, 11, -6.1);
+            ctx.bezierCurveTo(12.5, -4.4, 13.5, -2.3, 13.5, 0.3);
+            ctx.bezierCurveTo(13.5, 9.5, 7.9, 11.5, 2.6, 12.1);
+            ctx.bezierCurveTo(3.3, 12.7, 3.9, 13.7, 3.9, 15.3);
+            ctx.lineTo(3.9, 20.1);
+            ctx.bezierCurveTo(3.9, 20.7, 4.3, 21.4, 5.5, 22.7);
+            ctx.bezierCurveTo(14.9, 19.5, 21.8, 10.6, 21.8, 0);
+            ctx.bezierCurveTo(21.8, -13.2, 11.1, -24, 0, -24);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+        }
+        
+        function generateIcons() {
+            const sizes = [16, 48, 128, 512];
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`canvas${size}`);
+                drawPreviewHubIcon(canvas, size);
+            });
+            
+            document.getElementById('status').style.display = 'block';
+            document.getElementById('status').innerHTML = '<strong>✅ 图标已生成！</strong>现在可以点击"生成并下载图标"按钮保存文件。';
+        }
+        
+        function generateAndDownload() {
+            generateIcons();
+            
+            const sizes = [16, 48, 128, 512];
+            let downloadCount = 0;
+            
+            sizes.forEach((size, index) => {
+                setTimeout(() => {
+                    const canvas = document.getElementById(`canvas${size}`);
+                    const link = document.createElement('a');
+                    link.download = `icon${size}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    downloadCount++;
+                    if (downloadCount === sizes.length) {
+                        document.getElementById('status').innerHTML = '<strong>🎉 所有图标已下载完成！</strong><br>请将下载的图标文件移动到 icons/ 文件夹中替换现有文件。';
+                    }
+                }, index * 500);
+            });
+        }
+        
+        // 页面加载时自动生成预览
+        window.onload = generateIcons;
+    </script>
+</body>
+</html>
