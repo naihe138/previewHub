@@ -3,7 +3,7 @@
 🖼️ **PreviewHub** 是一个Chrome浏览器插件，让您在GitHub页面上直接预览所有.md文件中的图片，无需跳转到单独的图片页面。同时可以支持打开web ide
 
 
-<a href="./previewTest/1758181332440.png">查看演示</a>
+[查看演示](./previewTest/1758181332440.gif)
 
 
 <div style="width: 100%; display: flex">
