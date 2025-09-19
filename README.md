@@ -12,6 +12,8 @@
  <img style="width: 30%" src="./previewTest/p3.png"/>
 </div>
 
+<img style="width: 30%" src="./icons/icon16.png"/>
+
 
 ### 🎨 图标设计
 简约设计融合GitHub与图片预览概念：

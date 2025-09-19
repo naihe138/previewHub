@@ -8,7 +8,7 @@ class PreviewHub {
     
     // 图片缩放和拖拽相关属性
     this.scale = 1;
-    this.minScale = 1;
+    this.minScale = 0.5; // 允许缩小到50%，对大图片有用
     this.maxScale = 10;
     this.translateX = 0;
     this.translateY = 0;
@@ -453,11 +453,15 @@ class PreviewHub {
   }
 
   zoomIn() {
-    this.zoom(0.2);
+    // 根据当前缩放级别调整缩放步长
+    const zoomStep = this.scale < 1 ? 0.1 : (this.scale < 2 ? 0.25 : 0.5);
+    this.zoom(zoomStep);
   }
 
   zoomOut() {
-    this.zoom(-0.2);
+    // 根据当前缩放级别调整缩放步长
+    const zoomStep = this.scale <= 1 ? 0.1 : (this.scale <= 2 ? 0.25 : 0.5);
+    this.zoom(-zoomStep);
   }
 
   resetZoom() {
@@ -525,7 +529,15 @@ class PreviewHub {
 
   // 限制拖拽边界
   constrainPosition() {
-    if (this.scale <= 1) {
+    if (this.scale < 1) {
+      // 缩小时居中显示
+      this.translateX = 0;
+      this.translateY = 0;
+      return;
+    }
+    
+    if (this.scale === 1) {
+      // 原始大小时居中显示
       this.translateX = 0;
       this.translateY = 0;
       return;
@@ -537,15 +549,32 @@ class PreviewHub {
     if (!container || !previewImg) return;
 
     const containerRect = container.getBoundingClientRect();
-    const imgRect = previewImg.getBoundingClientRect();
     
-    // 计算图片在当前缩放下的实际尺寸
-    const scaledWidth = imgRect.width;
-    const scaledHeight = imgRect.height;
+    // 获取图片的自然尺寸（原始尺寸）
+    const naturalWidth = previewImg.naturalWidth || previewImg.width;
+    const naturalHeight = previewImg.naturalHeight || previewImg.height;
     
-    // 计算最大允许的偏移量
-    const maxTranslateX = Math.max(0, (scaledWidth - containerRect.width) / 2 / this.scale);
-    const maxTranslateY = Math.max(0, (scaledHeight - containerRect.height) / 2 / this.scale);
+    // 计算图片在容器中的显示尺寸（考虑max-width和max-height限制）
+    const containerWidth = containerRect.width - 40; // 减去padding
+    const containerHeight = containerRect.height - 40;
+    const maxDisplayHeight = Math.min(containerHeight, window.innerHeight * 0.6); // 60vh
+    
+    // 计算图片的显示比例
+    const widthRatio = containerWidth / naturalWidth;
+    const heightRatio = maxDisplayHeight / naturalHeight;
+    const displayRatio = Math.min(widthRatio, heightRatio, 1); // 不超过原始尺寸
+    
+    // 计算图片在scale=1时的显示尺寸
+    const baseDisplayWidth = naturalWidth * displayRatio;
+    const baseDisplayHeight = naturalHeight * displayRatio;
+    
+    // 计算当前缩放下的图片尺寸
+    const scaledWidth = baseDisplayWidth * this.scale;
+    const scaledHeight = baseDisplayHeight * this.scale;
+    
+    // 计算最大允许的偏移量（基于容器和缩放后图片的差值）
+    const maxTranslateX = Math.max(0, (scaledWidth - containerWidth) / 2 / this.scale);
+    const maxTranslateY = Math.max(0, (scaledHeight - containerHeight) / 2 / this.scale);
     
     // 限制水平位置
     this.translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, this.translateX));
