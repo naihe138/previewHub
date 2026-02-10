@@ -68,9 +68,9 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-  max-width: 90vw;
-  max-height: 90vh;
-  width: 800px;
+  max-width: 95vw;
+  max-height: 95vh;
+  width: 1366px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -183,7 +183,7 @@
 
 .previewhub-preview-image {
   max-width: 100%;
-  max-height: 60vh;
+  max-height: 75vh;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -446,7 +446,7 @@ body[data-color-mode="dark"] .previewhub-download-btn:hover,
 
 .previewhub-preview-image {
   max-width: 100%;
-  max-height: 60vh;
+  max-height: 75vh;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);

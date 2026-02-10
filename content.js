@@ -202,7 +202,7 @@ class PreviewHub {
     if (!markdownContainer) return;
 
     const images = markdownContainer.querySelectorAll('img');
-    images.forEach((img, index) => {
+    images.forEach((img) => {
       // 移除已有的点击处理
       img.removeEventListener('click', this.handleImageClick);
       
@@ -210,7 +210,7 @@ class PreviewHub {
       img.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        this.handleImageClick(e, index);
+        this.handleImageClick(e, img);
       });
       
       // 添加悬停效果
@@ -220,9 +220,9 @@ class PreviewHub {
   }
 
   // 处理图片点击
-  handleImageClick = (e, index) => {
+  handleImageClick = (e, clickedImg) => {
     e.preventDefault();
-    this.openPreview(index);
+    this.openPreview(null, clickedImg);
   }
 
   // 创建预览模态框
@@ -364,12 +364,30 @@ class PreviewHub {
   }
 
   // 打开预览
-  openPreview(startIndex = 0) {
+  openPreview(startIndex = 0, clickedImg = null) {
     const markdownContainer = this.getMarkdownContainer();
     if (!markdownContainer) return;
 
     this.images = this.findMarkdownImages(markdownContainer);
     if (this.images.length === 0) return;
+
+    // 如果提供了点击的图片元素，找到它在images数组中的索引
+    if (clickedImg) {
+      const clickedSrc = clickedImg.src;
+      const foundIndex = this.images.findIndex(img => {
+        // 首先尝试通过元素引用匹配
+        if (img.element === clickedImg) return true;
+        // 然后尝试通过src匹配
+        if (img.src === clickedSrc) return true;
+        // 最后尝试通过element的src匹配（处理可能的URL变化）
+        if (img.element && img.element.src === clickedSrc) return true;
+        return false;
+      });
+      
+      if (foundIndex !== -1) {
+        startIndex = foundIndex;
+      }
+    }
 
     this.currentIndex = Math.max(0, Math.min(startIndex, this.images.length - 1));
     this.modal.classList.add('active');
