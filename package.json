@@ -1,6 +1,6 @@
 {
   "name": "previewhub-github-image-preview",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "在GitHub页面直接预览README.md中的图片，支持弹窗浏览和导航，兼容github.dev编辑器",
   "main": "content.js",
   "scripts": {
